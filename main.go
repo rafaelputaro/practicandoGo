@@ -1,9 +1,10 @@
 package main
 
-import (
-	"fmt"
-)
 
 func main() {
-	fmt.Print("Hola Mundo")
+	path := string("trips_2021.csv")
+	p, _ := Parser(path)
+	if p != nil {
+		Print(p)
+	}
 }
