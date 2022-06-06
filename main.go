@@ -1,10 +1,13 @@
 package main
 
+import (
+	"capudo/parser"
+)
 
 func main() {
 	path := string("trips_2021.csv")
-	p, _ := Parser(path)
+	p, _ := parser.Parser(path)
 	if p != nil {
-		Print(p)
+		parser.Print(p)
 	}
 }

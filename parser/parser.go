@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"bufio"
@@ -19,6 +19,7 @@ func Parser(pathArchivo string) (p *parser, err error) {
 	for fileScanner.Scan() {
 		p.rows = append(p.rows, strings.Split(fileScanner.Text(), ","))
 	}
+	defer archivo.Close()
 	return p, err
 }
 
