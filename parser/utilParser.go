@@ -4,14 +4,22 @@ import (
 	"time"
 	"strings"
 	"strconv"
+	"fmt"
 )
 
-func ParseToFloatError(cadena string, eParam error, bitSize int)
-					(float float32, e error){
-	float, e = strconv.ParseFloat(recString[1], bitSize)
+/*
+	Params: cadena (flotante como string), eParam (error arrastrado). 
+	Returns: fotante32 (flotante resultado de la conversión de la cadena),
+		error(se retorna el primer error en aparición entre el parámetro y el error
+		generado en la conversión)
+*/
+func ParseToFloat32Error(cadena string, eParam error) (flotante32 float32, e error) {
+	flotante64, e := strconv.ParseFloat(cadena, 32)
+	flotante32 = float32(flotante64)
 	if (eParam != nil){
 		e = eParam
 	}	
+	return flotante32, e
 }
 
 /* Params: cadena (entero como cadena), eParam (error)
@@ -51,17 +59,25 @@ func ParseToIntError(cadena string, eParam error) (entero int, e error){
 func ParseTimeUTC(tiempoCadena string) (t time.Time, e error){
 	vectorTiempo := strings.Split(tiempoCadena, " ")
 	// obtención componentes de fecha
-	//var dia, mes, anio uint32
+	var dia, mes, anio int
 	vectorFecha := strings.Split(vectorTiempo[0], "-")
-	dia, e := parseToIntError(vectorFecha[2], e)
-	mes, e := parseToIntError(vectorFecha[1], e)
-	anio, e := parseToIntError(vectorFecha[0], e)
+	if (len(vectorFecha) >= 3){
+		dia, e = ParseToIntError(vectorFecha[2], e)
+		mes, e = ParseToIntError(vectorFecha[1], e)
+		anio, e = ParseToIntError(vectorFecha[0], e)
+	} else {
+		e = fmt.Errorf("formato incorrecto de fecha")
+	}
 	// obtención componentes de la hora
+	var hora, minuto, segundos int
 	vectorHora := strings.Split(vectorTiempo[1], ":")
-	hora, e := parseToIntError(vectorHora[0], e)
-	minuto, e := parseToIntError(vectorHora[1], e)
-	segundos, e := parseToIntError(vectorHora[2], e)
-	//time.Month(mes)
+	if (len(vectorHora) >= 3){
+		hora, e = ParseToIntError(vectorHora[0], e)
+		minuto, e = ParseToIntError(vectorHora[1], e)
+		segundos, e = ParseToIntError(vectorHora[2], e)
+	} else if (e == nil)  {
+		e = fmt.Errorf("formato incorrecto de hora")
+	}
 	t = time.Date(anio, time.Month(mes), dia, hora, minuto, segundos, 0, time.UTC)
 	return t, e
 }

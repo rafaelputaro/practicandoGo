@@ -1,47 +1,73 @@
 package parser
 
 import (
-	"fmt"
+	"capudo/model"
 )
 
-/*
+const PATH_RECORRIDOS = "trips_2021.csv"
+
+var (
+	instanceParserRecorridos *parserRecorridos
+)
+
 type parserRecorridos struct{
-	
-}
-*/
-
-func funcion(){
-	cadena :="2021-04-10 20:48:15 UTC"
-	t, e := ParseTimeUTC(cadena)
-	if (e == nil){
-		fmt.Println(t.UTC())
-	}
-	var v uint =32
-	fmt.Println(fmt.Sprintln(v))
+	recorridos []model.Recorrido
 }
 
-/*
-func parseRowToRecorrido(row [16]string)(r *recorrido.Recorrido, e error){
+func parseRowToRecorrido(row []string)(r *model.Recorrido, e error){
 	//id y duración
-	id_recorrido = row[0]
-	duraccion_recorrido = parseToUint32Error(recString[1], error)
+	id_recorrido := row[0]
+	duracion_recorrido, e := ParseToUint32Error(row[1], e)
 	//origen
-	fecha_origen_recorido = recString[2]
-	id_estacion_origen = recString[3]
-	nombre_estacion_origen = recString[4]
-	direccion_estacion_origen = recString[5]
-	r.long_estacion_origen = parseToFloatError(recString[6], errores, 32)
-	r.lat_estacion_origen = parseToFloatError(recString[7], errores, 32)
+	fecha_origen_recorrido, e := ParseTimeUTC(row[2])
+	id_estacion_origen := row[3]
+	nombre_estacion_origen := row[4]
+	direccion_estacion_origen := row[5]
+	long_estacion_origen, e := ParseToFloat32Error(row[6], e)
+	lat_estacion_origen, e := ParseToFloat32Error(row[7], e)
 	//destino
-	r.fecha_origen_recorido = recString[8]
-	r.id_estacion_origen = recString[9]
-	r.nombre_estacion_origen = recString[10]
-	r.direccion_estacion_origen = recString[11]
-	r.long_estacion_origen = parseToFloatError(recString[12], errores, 32)
-	r.lat_estacion_origen = parseToFloatError(recString[13], errores, 32)
+	fecha_destino_recorrido, e := ParseTimeUTC(row[8])
+	id_estacion_destino := row[9]
+	nombre_estacion_destino := row[10]
+	direccion_estacion_destino := row[11]
+	long_estacion_destino, e := ParseToFloat32Error(row[12], e)
+	lat_estacion_destino, e := ParseToFloat32Error(row[13], e)
 	//datos usuario y bicicleta
-	r.id_usuario = recString[14]
-	r.modelo_bicicleta = recString[15]
-
+	id_usuario := row[14]
+	modelo_bicicleta := row[15]
+	r = model.CreateRecorrido(id_recorrido, duracion_recorrido,
+		fecha_origen_recorrido, id_estacion_origen,
+		nombre_estacion_origen, direccion_estacion_origen,
+		long_estacion_origen, lat_estacion_origen,
+		fecha_destino_recorrido, id_estacion_destino,
+		nombre_estacion_destino, direccion_estacion_destino,
+		long_estacion_destino, lat_estacion_destino,
+		id_usuario, modelo_bicicleta)
 	return r, e
-}*/
+}
+
+func createParserRecorridos()(parReco *parserRecorridos, e error){
+	parserAux, eParGen := CreateParserGenerico(PATH_RECORRIDOS)
+	if (eParGen != nil){
+		parReco = new(parserRecorridos)
+		for _, row := range parserAux.rows {			
+			rowParsed, eParRow := parseRowToRecorrido(row) 
+			if (eParRow != nil){
+				parReco.recorridos = append(parReco.recorridos, *rowParsed)
+			}			
+		}
+	} else{
+		e = eParGen
+	}
+	return parReco, e
+}
+
+func GetRecorridos() (recorridos *[]model.Recorrido, e error){
+	if(instanceParserRecorridos == nil){
+		instanceParserRecorridos, e = createParserRecorridos()
+		if (e != nil){
+			recorridos = &instanceParserRecorridos.recorridos
+		}
+	} 
+	return recorridos, e
+}

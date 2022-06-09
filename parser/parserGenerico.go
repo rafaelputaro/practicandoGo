@@ -11,7 +11,7 @@ type parserGenerico struct {
 	rows [][]string
 }
 
-func Parser(pathArchivo string) (p *parserGenerico, err error) {
+func CreateParserGenerico(pathArchivo string) (p *parserGenerico, err error) {
 	p = new(parserGenerico)
 	archivo, err := os.Open(pathArchivo)
 	fileScanner := bufio.NewScanner(archivo)
