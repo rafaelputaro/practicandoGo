@@ -35,18 +35,47 @@ func parseRowToRecorrido(row []string)(r *model.Recorrido, e error){
 	//datos usuario y bicicleta
 	id_usuario := row[14]
 	modelo_bicicleta := row[15]
-	r = model.CreateRecorrido(id_recorrido, duracion_recorrido,
-		fecha_origen_recorrido, id_estacion_origen,
-		nombre_estacion_origen, direccion_estacion_origen,
-		long_estacion_origen, lat_estacion_origen,
-		fecha_destino_recorrido, id_estacion_destino,
-		nombre_estacion_destino, direccion_estacion_destino,
-		long_estacion_destino, lat_estacion_destino,
-		id_usuario, modelo_bicicleta)
+	if (e == nil){
+		r = model.CreateRecorrido(id_recorrido, duracion_recorrido,
+			fecha_origen_recorrido, id_estacion_origen,
+			nombre_estacion_origen, direccion_estacion_origen,
+			long_estacion_origen, lat_estacion_origen,
+			fecha_destino_recorrido, id_estacion_destino,
+			nombre_estacion_destino, direccion_estacion_destino,
+			long_estacion_destino, lat_estacion_destino,
+			id_usuario, modelo_bicicleta)
+	}
 	return r, e
 }
 
+func createParserRecorridosPath(path string)(parReco *parserRecorridos, e error){
+	parserAux, eParGen := CreateParserGenerico(path)
+	if (eParGen == nil){
+		parReco = new(parserRecorridos)
+		for i := 1 ; i < len(parserAux.rows); i++ {			
+			rowParsed, eParRow := parseRowToRecorrido(parserAux.rows[i]) 
+			if (eParRow == nil && rowParsed != nil){
+				parReco.recorridos = append(parReco.recorridos, *rowParsed)
+			}			
+		}
+		/*
+		for _, row := range parserAux.rows {			
+			rowParsed, eParRow := parseRowToRecorrido(row) 
+			if (eParRow == nil && rowParsed != nil){
+				parReco.recorridos = append(parReco.recorridos, *rowParsed)
+			}			
+		}
+
+		*/
+	} else{
+		e = eParGen
+	}
+	return parReco, e
+}
+
 func createParserRecorridos()(parReco *parserRecorridos, e error){
+	return createParserRecorridosPath(PATH_RECORRIDOS)
+	/*
 	parserAux, eParGen := CreateParserGenerico(PATH_RECORRIDOS)
 	if (eParGen != nil){
 		parReco = new(parserRecorridos)
@@ -59,7 +88,7 @@ func createParserRecorridos()(parReco *parserRecorridos, e error){
 	} else{
 		e = eParGen
 	}
-	return parReco, e
+	return parReco, e*/
 }
 
 func GetRecorridos() (recorridos *[]model.Recorrido, e error){

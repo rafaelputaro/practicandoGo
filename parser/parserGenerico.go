@@ -1,10 +1,9 @@
 package parser
 
 import (
-	"bufio"
 	"fmt"
 	"os"
-	"strings"
+	"encoding/csv"
 )
 
 type parserGenerico struct {
@@ -14,12 +13,11 @@ type parserGenerico struct {
 func CreateParserGenerico(pathArchivo string) (p *parserGenerico, err error) {
 	p = new(parserGenerico)
 	archivo, err := os.Open(pathArchivo)
-	fileScanner := bufio.NewScanner(archivo)
-	fileScanner.Split(bufio.ScanLines)
-	for fileScanner.Scan() {
-		p.rows = append(p.rows, strings.Split(fileScanner.Text(), ","))
+	if( err == nil){
+		defer archivo.Close()
+		csvReader := csv.NewReader(archivo)
+		p.rows, err = csvReader.ReadAll()	
 	}
-	defer archivo.Close()
 	return p, err
 }
 
