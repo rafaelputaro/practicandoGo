@@ -73,19 +73,12 @@ func TestParseRowToRecorrido(t *testing.T){
 	}
 }
 
-/*
 func TestParserRecorridos(t *testing.T) {
+	datosTest := createDatosParserRecorridoTest()
 	output, _:= createParserRecorridosPath(PATH_TEST_TRIPS)
-	//datosTest := createDatosParserRecorridoTest()
-	if ( output != nil){
-		fmt.Println("Longitud: ",len(output.recorridos))
-		for i := 0; i < 0; i++  {
-			//fmt.Println("Datos: ", datosTest[i])
-			fmt.Println("Ouput: ", output.recorridos[i])
-			/*
-			if(){
-				t.Errorf("CreateParserGenerico = (%v), se esperaba (%v)",output.rows[i+1][j], datosParserGenericoTest[i][j])
-			}*/
-		//}
-	//}
-//}
+	for i := 0; i < 4; i++  {
+		if(datosTest[i] != output.recorridos[i]){
+			t.Errorf("parserRecorridos = (%v), se esperaba (%v)",output.recorridos[i],datosTest[i])
+		}
+	}
+}

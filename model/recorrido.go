@@ -58,4 +58,3 @@ func CreateRecorrido(id_recorrido string, duraccion_recorrido uint32,
 	r.modelo_bicicleta = modelo_bicicleta
 	return r
 }
-

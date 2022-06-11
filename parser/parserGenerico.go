@@ -1,15 +1,22 @@
 package parser
 
 import (
-	"fmt"
 	"os"
 	"encoding/csv"
 )
 
+// Es un slice de columnas parseadas como cadenas de caracteres
 type parserGenerico struct {
 	rows [][]string
 }
 
+/*
+	Params:
+		path (ruta del archivo .csv fuente)
+	Returns:
+		parGenerico (parser creado)
+		e (el primer error en orden de aparición durante el parseo)
+*/
 func CreateParserGenerico(pathArchivo string) (p *parserGenerico, err error) {
 	p = new(parserGenerico)
 	archivo, err := os.Open(pathArchivo)
@@ -21,8 +28,3 @@ func CreateParserGenerico(pathArchivo string) (p *parserGenerico, err error) {
 	return p, err
 }
 
-func Print(p *parserGenerico){
-	for _, row := range p.rows{
-		fmt.Println("Fila:", row)
-	}
-}

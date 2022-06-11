@@ -82,3 +82,15 @@ func ParseTimeUTC(tiempoCadena string) (t time.Time, e error){
 	return t, e
 }
 
+/*
+	Params: tiempoCadena (fecha y hora en formato UTC como cadena),
+	Returns: t (la fecha convertida al tipo Time),
+			e (el primer error al intentar convertir la fecha)
+*/
+func ParseTimeUTCError(tiempoCadena string, eParam error) (t time.Time, e error){
+	t, e = ParseTimeUTC(tiempoCadena)
+	if (eParam != nil){
+		e = eParam
+	}
+	return t, e
+}
