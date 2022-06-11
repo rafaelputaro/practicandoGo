@@ -75,10 +75,14 @@ func TestParseRowToRecorrido(t *testing.T){
 
 func TestParserRecorridos(t *testing.T) {
 	datosTest := createDatosParserRecorridoTest()
-	output, _:= createParserRecorridosPath(PATH_TEST_TRIPS)
-	for i := 0; i < 4; i++  {
-		if(datosTest[i] != output.recorridos[i]){
-			t.Errorf("parserRecorridos = (%v), se esperaba (%v)",output.recorridos[i],datosTest[i])
+	output, e:= createParserRecorridosPath(PATH_TEST_RECORRIDOS)
+	if (e == nil){
+		for i := 0; i < 4; i++  {
+			if(datosTest[i] != output.recorridos[i]){
+				t.Errorf("parserRecorridos = (%v), se esperaba (%v)",output.recorridos[i],datosTest[i])
+			}
 		}
+	} else {
+		t.Errorf("parserRecorridos/ nombre de archivo inválido :"+ PATH_TEST_RECORRIDOS)
 	}
 }

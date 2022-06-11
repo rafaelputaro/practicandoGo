@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"os"
 	"encoding/csv"
+	"os"
 )
 
 // Es un slice de columnas parseadas como cadenas de caracteres
@@ -24,7 +24,7 @@ func CreateParserGenerico(pathArchivo string) (p *parserGenerico, err error) {
 		defer archivo.Close()
 		csvReader := csv.NewReader(archivo)
 		p.rows, err = csvReader.ReadAll()	
-	}
+	} 
 	return p, err
 }
 

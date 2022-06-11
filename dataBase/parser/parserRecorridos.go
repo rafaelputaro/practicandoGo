@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-const PATH_RECORRIDOS = "trips_2021.csv"
+const PATH_RECORRIDOS = "../trips_2021.csv"
 
 var lock = &sync.Mutex{}
 
@@ -99,8 +99,8 @@ func createParserRecorridos()(parReco *parserRecorridos, e error){
 	Nota: la función utiliza una llave de exclusión internamente.
 */
 func GetRecorridos() (recorridos *[]model.Recorrido, e error){
-	lock.Lock()
-	defer lock.Unlock()
+	//lock.Lock()
+	//defer lock.Unlock()
 	if(instanceParserRecorridos == nil){
 		instanceParserRecorridos, e = createParserRecorridos()
 		if (e != nil){
