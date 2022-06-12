@@ -5,8 +5,6 @@ import (
 	"sync"
 )
 
-const PATH_RECORRIDOS = "../trips_2021.csv"
-
 var lock = &sync.Mutex{}
 
 // Instancia del singleton del parser
@@ -15,18 +13,18 @@ var (
 )
 
 // Tipo de la instancia de recorrido
-type parserRecorridos struct{
+type parserRecorridos struct {
 	recorridos []model.Recorrido
 }
 
 /*
-	Params: 
+	Params:
 		row (slice con los del recorrido como strings)
-	Returns: 
+	Returns:
 		r (puntero a una instancia de Recorrido parseada a partir de row)
 		e (el primer error de parseo en orden de aparición)
 */
-func parseRowToRecorrido(row []string)(r *model.Recorrido, e error){
+func parseRowToRecorrido(row []string) (r *model.Recorrido, e error) {
 	//id y duración
 	id_recorrido := row[0]
 	duracion_recorrido, e := ParseToUint32Error(row[1], e)
@@ -47,7 +45,7 @@ func parseRowToRecorrido(row []string)(r *model.Recorrido, e error){
 	//datos usuario y bicicleta
 	id_usuario := row[14]
 	modelo_bicicleta := row[15]
-	if (e == nil){
+	if e == nil {
 		r = model.CreateRecorrido(id_recorrido, duracion_recorrido,
 			fecha_origen_recorrido, id_estacion_origen,
 			nombre_estacion_origen, direccion_estacion_origen,
@@ -67,17 +65,17 @@ func parseRowToRecorrido(row []string)(r *model.Recorrido, e error){
 		parReco (instancia de parser creada)
 		e (el primer error en orden de aparición durante el parseo)
 */
-func createParserRecorridosPath(path string)(parReco *parserRecorridos, e error){
+func createParserRecorridosPath(path string) (parReco *parserRecorridos, e error) {
 	parserAux, eParGen := CreateParserGenerico(path)
-	if (eParGen == nil){
+	if eParGen == nil {
 		parReco = new(parserRecorridos)
-		for i := 1 ; i < len(parserAux.rows); i++ {			
-			rowParsed, eParRow := parseRowToRecorrido(parserAux.rows[i]) 
-			if (eParRow == nil && rowParsed != nil){
+		for i := 1; i < len(parserAux.rows); i++ {
+			rowParsed, eParRow := parseRowToRecorrido(parserAux.rows[i])
+			if eParRow == nil && rowParsed != nil {
 				parReco.recorridos = append(parReco.recorridos, *rowParsed)
-			}			
+			}
 		}
-	} else{
+	} else {
 		e = eParGen
 	}
 	return parReco, e
@@ -88,7 +86,7 @@ func createParserRecorridosPath(path string)(parReco *parserRecorridos, e error)
 		parReco (instancia de parser creada a partir de la ruta por defecto)
 		e (el primer error en orden de aparición durante el parseo)
 */
-func createParserRecorridos()(parReco *parserRecorridos, e error){
+func createParserRecorridos() (parReco *parserRecorridos, e error) {
 	return createParserRecorridosPath(PATH_RECORRIDOS)
 }
 
@@ -98,14 +96,14 @@ func createParserRecorridos()(parReco *parserRecorridos, e error){
 		e (el primer error en orden de aparición durante el parseo)
 	Nota: la función utiliza una llave de exclusión internamente.
 */
-func GetRecorridos() (recorridos *[]model.Recorrido, e error){
-	//lock.Lock()
-	//defer lock.Unlock()
-	if(instanceParserRecorridos == nil){
+func GetRecorridos() (recorridos *[]model.Recorrido, e error) {
+	lock.Lock()
+	defer lock.Unlock()
+	if instanceParserRecorridos == nil {
 		instanceParserRecorridos, e = createParserRecorridos()
-		if (e != nil){
+		if e == nil {
 			recorridos = &instanceParserRecorridos.recorridos
 		}
-	} 
+	}
 	return recorridos, e
 }
